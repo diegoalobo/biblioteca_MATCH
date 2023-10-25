@@ -1,24 +1,19 @@
-#adicionando a biblioteca tkinter para poder desenvolver uma interface gráfica
 import tkinter as tk
-#define a classe Livro que é usada para criar objetos que vão representar os livros dentro do catálogo
-#aqui também são apresentadas as instâncias  da classe livro e a definição dos atributos (título, autor, exemplares disponíveis)
 
 class Livro:
-    def __init__(self, titulo, autor, exemplares_disponiveis): #esse é o construtor da classe livro, ele vai receber os parâmetros título, autor e exemplares disponíveis
+    def __init__(self, titulo, autor, exemplares_disponiveis):
         self.titulo = titulo
         self.autor = autor
-        if exemplares_disponiveis > 0: #o bloco de if vai verificar se o número de exemplares é maior que 0
+        if exemplares_disponiveis > 0:
             self.exemplares_disponiveis = exemplares_disponiveis
         else:
-            raise ValueError("O número de exemplares disponiveis deve ser maior que zero.")
+            raise ValueError("O número de exemplares disponíveis deve ser maior que zero.")
 
-    def __str__(self): #essa linha permite que possamos converter um objeto livro em string que vai ser apresentada no return abaixo
+    def __str__(self):
         return f'Título: {self.titulo}, Autor: {self.autor}, Exemplares Disponíveis: {self.exemplares_disponiveis}'
 
-
-#define a classe Catalogo que é usada para gerenciar o catálogo de livros, permite adicionar livros, listar e pesquisar as informações sobre os livros no sistema
 class Catalogo:
-    def __init__(self):
+    def __init(self):
         self.catalogo = []
 
     def adicionar_livro(self, livro):
@@ -73,6 +68,10 @@ def pesquisar_livros():
     else:
         resultado_listbox.insert(tk.END, "Nenhum livro encontrado para o termo de pesquisa.")
 
+def salvar_catalogo():
+    catalogo.salvar_catalogo('catalogo.txt')
+    resultado_label.config(text="Catálogo salvo com sucesso!")
+
 # Criar um catálogo e carregar dados, se houver
 catalogo = Catalogo()
 catalogo.carregar_catalogo('catalogo.txt')
@@ -100,6 +99,8 @@ pesquisa_entry = tk.Entry(frame_pesquisar)
 pesquisar_button = tk.Button(frame_pesquisar, text="Pesquisar Livros", command=pesquisar_livros)
 resultado_listbox = tk.Listbox(frame_pesquisar, width=100, height=10)
 
+salvar_catalogo_button = tk.Button(root, text="Salvar Catálogo", command=salvar_catalogo)
+
 titulo_label.grid(row=0, column=0)
 autor_label.grid(row=1, column=0)
 exemplares_label.grid(row=2, column=0)
@@ -114,5 +115,6 @@ pesquisa_entry.grid(row=0, column=1)
 pesquisar_button.grid(row=1, column=0, columnspan=2)
 resultado_listbox.grid(row=2, column=0, columnspan=2)
 
-root.protocol("WM_DELETE_WINDOW", lambda: catalogo.salvar_catalogo('catalogo.txt'))
+salvar_catalogo_button.pack(pady=10)
+
 root.mainloop()
