@@ -1,6 +1,5 @@
 #adicionando a biblioteca tkinter para poder desenvolver uma interface gráfica
 import tkinter as tk
-
 #define a classe Livro que é usada para criar objetos que vão representar os livros dentro do catálogo
 #aqui também são apresentadas as instâncias  da classe livro e a definição dos atributos (título, autor, exemplares disponíveis)
 
@@ -19,21 +18,38 @@ class Livro:
 
 #define a classe Catalogo que é usada para gerenciar o catálogo de livros, permite adicionar livros, listar e pesquisar as informações sobre os livros no sistema
 class Catalogo:
-    def __init__(self): #construtor da classe Catalogo, ele vai iniciar um atributo catalogo como uma lista vazia
+    def __init__(self):
         self.catalogo = []
 
-    def adicionar_livro(self, livro): #permite adicionar itens a lista catalogo
+    def adicionar_livro(self, livro):
         self.catalogo.append(livro)
 
-    def listar_livros(self): #retorna a lista dos livros presentes no catalogo
+    def listar_livros(self):
         return self.catalogo
 
-    def pesquisar_livros(self, termo): #permite consultar os livros no catalogo com base em um termo de pesquisa
+    def pesquisar_livros(self, termo):
         resultados = []
         for livro in self.catalogo:
             if termo.lower() in livro.titulo.lower() or termo.lower() in livro.autor.lower():
                 resultados.append(livro)
         return resultados
+
+    def salvar_catalogo(self, filename):
+        with open(filename, 'w') as file:
+            for livro in self.catalogo:
+                file.write(f'{livro.titulo},{livro.autor},{livro.exemplares_disponiveis}\n')
+
+    def carregar_catalogo(self, filename):
+        self.catalogo = []
+        try:
+            with open(filename, 'r') as file:
+                for line in file:
+                    titulo, autor, exemplares = line.strip().split(',')
+                    exemplares = int(exemplares)
+                    livro = Livro(titulo, autor, exemplares)
+                    self.adicionar_livro(livro)
+        except FileNotFoundError:
+            pass
 
 def adicionar_livro():
     titulo = titulo_entry.get()
@@ -57,8 +73,9 @@ def pesquisar_livros():
     else:
         resultado_listbox.insert(tk.END, "Nenhum livro encontrado para o termo de pesquisa.")
 
-# Criar um catálogo vazio
+# Criar um catálogo e carregar dados, se houver
 catalogo = Catalogo()
+catalogo.carregar_catalogo('catalogo.txt')
 
 # Configurar a interface gráfica
 root = tk.Tk()
@@ -97,4 +114,5 @@ pesquisa_entry.grid(row=0, column=1)
 pesquisar_button.grid(row=1, column=0, columnspan=2)
 resultado_listbox.grid(row=2, column=0, columnspan=2)
 
+root.protocol("WM_DELETE_WINDOW", lambda: catalogo.salvar_catalogo('catalogo.txt'))
 root.mainloop()
